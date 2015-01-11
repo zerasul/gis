@@ -1,39 +1,63 @@
-#include "Buttons.cpp"
-
+#include "Buttons.h"
+/*
+ *
+ * Contructor de la clase:
+ * pin1-> pin primero
+ * pin2-> pin segundo
+ * pin3-> pin tercero
+ * pin4-> pin cuarto
+ * pin5-> pin quinto
+ */
 Buttons::Buttons(int pin1, int pin2, int pin3, int pin4, int pin5) {
-  this->ButtonPin1 = pin1;
-  this->ButtonPin2 = pin2;
-  this->ButtonPin3 = pin3;
-  this->ButtonPin4 = pin4;
-  this->ButtonPin5 = pin5;
-
-  this->buttonStates[0] = 0;
-  this->buttonStates[1] = 0;
-  this->buttonStates[2] = 0;
-  this->buttonStates[3] = 0;
-  this->buttonStates[4] = 0;
+  this->pines[0] = pin1;
+  this->pines[1] = pin1;
+  this->pines[2] = pin1;
+  this->pines[3] = pin1;
+  this->pines[4] = pin1;
   this->latchButtons[0] = 0;
   this->latchButtons[1] = 0;
   this->latchButtons[2] = 0;
   this->latchButtons[3] = 0;
   this->latchButtons[4] = 0;
 }
-
-boolean[] Buttons::generateButtonState() {
-
-  buttonStates[0] = digitalRead(this->ButtonPin1);
-  buttonStates[1] = digitalRead(this->ButtonPin2);
-  buttonStates[2] = digitalRead(this->ButtonPin3);
-  buttonStates[3] = digitalRead(this->ButtonPin4);
-  buttonStates[4] = digitalRead(this->ButtonPin5);
-  return this->buttonState;
+Buttons::~Buttons(){
+  
 }
+/*
+ * obtiene el estado del boton en funcion del numero de pin
+ * pin: Numero del 0 al 4 con el numero de pin.
+ * bool: indica si esta en alto o bajo.
+ */
+bool Buttons::getButtonState(int pin) {
 
-boolean[] Buttons::controlButtons(int ){
- for(byte i=0;i<5;i++){
-   if(buttonStates[i]==0)
-     this->latchButtons[i]=1;
-   
- } 
- return this->latchButtons;
+  return digitalRead(this->pines[pin]);
+
+}
+/*
+ *
+ * inicializa los latch de los botones
+ * */
+void Buttons::controlButtons() {
+  for (int i = 0; i < 5; i++) {
+    if (this->getButtonState(i) == 0)
+      this->latchButtons[i] = 1;
+
+  }
+}
+/*
+ * obtiene el estado del cerrojo.
+ * pin: numero del 0 al 4 con el numero de pin
+ * devuelve el estado del cerrojo.
+ */
+bool Buttons::getLatchState(int pin){
+   return this->latchButtons[pin];
+}
+/*
+ *
+ * Establece el estado del cerrojo.
+ * pin: numero del 0 al 4 con el numero de pin.
+ * estate: estado a activar (0 o 1).
+ */
+void Buttons::setLatchState(int pin,int state){
+   this->latchButtons[pin]=state;
 }
