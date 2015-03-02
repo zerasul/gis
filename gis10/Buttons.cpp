@@ -20,6 +20,7 @@ Buttons::Buttons(int pin1, int pin2, int pin3, int pin4, int pin5) {
   this->latchButtons[3] = 0;
   this->latchButtons[4] = 0;
 }
+
 Buttons::~Buttons(){
   
 }
@@ -37,11 +38,31 @@ bool Buttons::getButtonState(int pin) {
  *
  * inicializa los latch de los botones
  * */
+int current; //Estado actual del boton.
+int count; //segundos que esta pulsado
+byte previous = HIGH;//Estado anterior.
+unsigned long firstTime; //Hace cuanto se comenzo a pulsar el boton.
+
 void Buttons::controlButtons() {
   for (int i = 0; i < 5; i++) {
     if (this->getButtonState(i) == 0)
       this->latchButtons[i] = 1;
-
+    if(current == LOW && previous == HIGH && millis() - firstTime > 200){
+      firstTime = millis(); //Memoriza cuando se ha pulsado el boton
+    }
+    if(current  == LOW && ((millis() - firstTime)% 1000) < 20 && millis() - firstTime > 500){
+      count++; //Cada segundo que es pulsado se incrementa el contador.
+    }
+    if(current == HIGH && previous == LOW && count >=3 && count <= 6){
+      Serial.println("Larga!");      //haz algo en pulsacion larga.
+    }
+    if(current == HIGH && previous == LOW && count >=0 && count < 3){
+      Serial.println("Corta!");
+    }
+    if(current == HIGH){
+      count = 0; //resetea el contador si el boton no es pulsado.    
+    }
+    previous = current;
   }
 }
 /*
@@ -61,3 +82,5 @@ bool Buttons::getLatchState(int pin){
 void Buttons::setLatchState(int pin,int state){
    this->latchButtons[pin]=state;
 }
+
+
