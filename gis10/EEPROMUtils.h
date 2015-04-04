@@ -12,6 +12,7 @@
 typedef struct{
  int humedadoptima;
  int tiemporiego;
+ int humedadmaxima;//Humedad maxima para la calibracion
 }Configuration;
 
 Configuration getDefaultConfig(){
